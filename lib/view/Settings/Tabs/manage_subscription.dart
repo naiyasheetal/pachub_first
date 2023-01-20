@@ -638,7 +638,6 @@ class _ManageSubscriptionState extends State<ManageSubscription> {
   }
   /////////////////////////////////////TODO UPDATE PLAN AND FEATURES//////////////////////////
   getMY_PLAN_AND_FEATURES() async {
-    //DateFormat('yMMMd').format(DateTime.parse(athleteuserdetails["DOB"].toString() ?? ""))
     MyApplication.getInstance()!
         .checkConnectivity(context)
         .then((internet) async {

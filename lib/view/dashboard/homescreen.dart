@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       clientTrainerID = PreferenceUtils.getString("client_trainerID");
       role = PreferenceUtils.getString("role");
     });
-    if(role == "Advisor" && role == "Coach / Recruiter") {
+    if(role == "Advisor" || role == "Coach / Recruiter") {
       getMY_PLAN_AND_FEATURES();
     }
   }
@@ -3094,14 +3094,14 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         differenceInDays!= null?differenceInDays ==1?
         Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 10,left: 10),
+          padding: EdgeInsets.only(top: 0, bottom: 10,left: 10),
           child: Row(
             children:  [
               Expanded(
                 child: CommonText(
-                    text:"Your plan will be expired after"+ " ${differenceInDays??" "} day,please subscribe your plan on webportal.",
+                    text:"Your plan will be expired after"+ " ${differenceInDays??" "} day,Please subscribe your plan on webportal.",
                     fontSize: 16,
-                    color: AppColors.dark_red,
+                    color: AppColors.orange,
                     fontWeight: FontWeight.w700),
               ),
             ],),
@@ -3110,17 +3110,17 @@ class _HomeScreenState extends State<HomeScreen> {
           child: CommonText(
               text:"Your plan is expired please subscribe your plan on webportal.",
               fontSize: 16,
-              color: AppColors.dark_red,
+              color: AppColors.orange,
               fontWeight: FontWeight.w700),
         ):differenceInDays!= null?differenceInDays!<=7?Padding(
-          padding: EdgeInsets.only(top: 10,bottom: 10,left: 10),
+          padding: EdgeInsets.only(top: 0,bottom: 10,left: 10),
           child: Row(
             children:  [
               Expanded(
                 child: CommonText(
-                    text:"Your plan will be expired after"+ " ${differenceInDays??" "} days,please subscribe your plan on webportal.",
+                    text:"Your plan will be expired after"+ " ${differenceInDays??" "} days,Please subscribe your plan on webportal.",
                     fontSize: 16,
-                    color: AppColors.dark_red,
+                    color: AppColors.orange,
                     fontWeight: FontWeight.w700),
               ),
             ],),
@@ -3132,6 +3132,7 @@ class _HomeScreenState extends State<HomeScreen> {
   /////////////////////////////////////TODO UPDATE PLAN AND FEATURES//////////////////////////
   getMY_PLAN_AND_FEATURES() async {
     //DateFormat('yMMMd').format(DateTime.parse(athleteuserdetails["DOB"].toString() ?? ""))
+    print("this is plan and getMY_PLAN_AND_FEATURES api call from home screen");
     MyApplication.getInstance()!
         .checkConnectivity(context)
         .then((internet) async {
@@ -3157,7 +3158,7 @@ class _HomeScreenState extends State<HomeScreen> {
             print("this is current date $dateTimeNow");
             DateTime dateTimeCreatedAt = DateTime.parse("${startdate}");
             DateTime dateTimeCreatedAtend = DateTime.parse("${enddate}");
-            differenceInDays = dateTimeCreatedAtend.difference(dateTimeCreatedAt).inDays;
+            differenceInDays = dateTimeCreatedAtend.difference(dateTimeNow).inDays;
             print('this is the date difference for startdate $differenceInDays');
             /*if(date!=startdate){
           DateTime dateTimeCreatedAt = DateTime.parse("${startdate}");
