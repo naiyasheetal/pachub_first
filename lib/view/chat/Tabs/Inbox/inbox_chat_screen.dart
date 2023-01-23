@@ -191,8 +191,9 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
               if (snapshot.hasData) {
                 print("this is msg lengeth ====<> ${snapshot.data?.result?.length}");
                 List<MychatResult>? chatresult = snapshot.data?.result;
+                if (chatresult != null) {
                 MychatResult lastMessage = chatresult!.last;
-                lastMessageId = chatresult.lastIndexOf(lastMessage);
+                lastMessageId = chatresult!.lastIndexOf(lastMessage);
                 scrollDown();
                 if (chatresult != null) {
                   return ListView.builder(
@@ -320,7 +321,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                       );
                     },
                   );
-                }
+                }}
               }
               else {
                 return const Center(
