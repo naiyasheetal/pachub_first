@@ -626,6 +626,7 @@ SendMessageApi(String? accessToken,String receiverID,String text,BuildContext co
       body: {"receiverID": receiverID,"text" : text},
       headers: {"Authorization": "Bearer $accessToken"},
     );
+    print("this is send msg para ${data.body}");
     if(data.statusCode == 200){
       print('sendmessage  URL : ' + data.request.toString());
       print("sendmessage Response:" + data.body);
@@ -691,6 +692,32 @@ Future<MYMessagechatlistingModel?>ChatMessageApi(String? accessToken,String rece
   }
   return null;
 }
+HARD_DeleteMessageApi(String? accessToken,String messageid,BuildContext context) async {
+  var client = http.Client();
+  try {
+    http.Response data = await client.post(
+      Uri.parse(
+        "${AppConstant.Hard_delete_message}",
+      ),
+      body: {"messageID": messageid},
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+    if(data.statusCode == 200){
+      print('hardDelete msg  URL : ' + data.request.toString());
+      print("hard msg Delete Response:" + data.body);
+      MyApplication.getInstance()?.showInGreenSnackBar("Message deleted Successfully!", context);
+    }
+    // else  if(data.statusCode == 401) {
+    //   return Get.offAll(Loginscreennew());
+    // }
+    //return StatsModel.fromJson(json.decode(data.body));
+  } catch (val) {
+    print(val);
+  } finally {
+    client.close();
+  }
+  return null;
+}
 DeleteMessageApi(String? accessToken,String messageid,BuildContext context) async {
   var client = http.Client();
   try {
@@ -728,9 +755,9 @@ FavouriteMessageApi(String? accessToken,String messageid,BuildContext context) a
       headers: {"Authorization": "Bearer $accessToken"},
     );
     if(data.statusCode == 200){
-      print('Delete msg  URL : ' + data.request.toString());
-      print("Delete Response:" + data.body);
-      MyApplication.getInstance()?.showInGreenSnackBar("Message added to Archiev Successfully!!", context);
+      print('Favourite msg  URL : ' + data.request.toString());
+      print("Favourite Response:" + data.body);
+      MyApplication.getInstance()?.showInGreenSnackBar("Message favourite Successfully!!", context);
     }
     // else  if(data.statusCode == 401) {
     //   return Get.offAll(Loginscreennew());

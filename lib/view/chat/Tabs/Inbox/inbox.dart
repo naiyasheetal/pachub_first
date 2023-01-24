@@ -78,6 +78,7 @@ class _InboxState extends State<Inbox> {
                               name : item.displayName.toString(),
                               selected : true,
                               recieverid: item.receiverID.toString(),
+                              senderid: item.senderID.toString(),
                             ));
                           },
                           onLongPress: () {

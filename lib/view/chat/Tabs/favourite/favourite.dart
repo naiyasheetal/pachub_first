@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 import 'package:pachub/Utils/appcolors.dart';
-import 'package:pachub/Utils/appstring.dart';
 import 'package:pachub/Utils/images.dart';
+import 'package:pachub/common_widget/nodatafound_page.dart';
 import 'package:pachub/common_widget/textstyle.dart';
+import 'package:pachub/models/ChatModel/chatUsersModel.dart';
 
-import '../../../common_widget/customloader.dart';
-import '../../../common_widget/nodatafound_page.dart';
-import '../../../config/preference.dart';
-import '../../../models/new_allchatlist_model.dart';
-import '../../../services/request.dart';
+import '../../../../common_widget/customloader.dart';
+import '../../../../config/preference.dart';
+import '../../../../models/AllChatModel/all_chat_list_model.dart';
+import '../../../../models/new_allchatlist_model.dart';
+import '../../../../services/request.dart';
+import '../Inbox/inbox_chat_screen.dart';
+import 'favourite_msg_screen.dart';
 
-class Delete extends StatefulWidget {
-  const Delete({Key? key}) : super(key: key);
+class Favourite extends StatefulWidget {
+
+  const Favourite({super.key,});
+
 
   @override
-  State<Delete> createState() => _DeleteState();
+  State<Favourite> createState() => _FavouriteState();
 }
 
-class _DeleteState extends State<Delete> {
+class _FavouriteState extends State<Favourite> {
   String? accessToken;
-
   @override
   void initState() {
     setState(() {
@@ -49,7 +56,7 @@ class _DeleteState extends State<Delete> {
             return Center(child: CustomLoader());
           case ConnectionState.done:
             if (snapshot.hasData) {
-              List< DeletedMessage_new>? records = snapshot.data?.deletedMessage;
+              List<FavoriteMessage_new>? records = snapshot.data?.favoriteMessage;
               if (records != null) {
                 return records.isNotEmpty
                     ? ListView.builder(
@@ -64,13 +71,14 @@ class _DeleteState extends State<Delete> {
                       children: [
                         InkWell(
                           onTap: () {
-                            /*Get.to(InboxChatScreen(
+                            Get.to(FavoritemsgChatScreen(
                               sender : item.picturePathS3.toString(),
                               online : true,
                               name : item.displayName.toString(),
                               selected : true,
                               recieverid: item.receiverID.toString(),
-                            ));*/
+                              senderid: item.senderID.toString(),
+                            ));
                           },
                           onLongPress: () {
                             setState(() {
@@ -195,21 +203,21 @@ class _DeleteState extends State<Delete> {
                     : const Padding(
                   padding: EdgeInsets.only(top: 15),
                   child: Center(
-                    child: NoDataFound(),
+                      child: NoDataFound(),
                   ),
                 );
               }
             } else {
               return const Center(
-                child:Center(
-                  child: NoDataFound(),
-                ),);
+                  child:Center(
+                      child: NoDataFound(),
+                  ),);
             }
         }
         return const Center(
-          child: Center(
-            child: NoDataFound(),
-          ),);
+            child: Center(
+                child: NoDataFound(),
+            ),);
       },
     );
   }

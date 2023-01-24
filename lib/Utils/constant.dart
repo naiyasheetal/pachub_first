@@ -32,6 +32,7 @@ class AppConstant {
   static String Message_favourite = BASE_URL_LIVE + "message/archive";
   static String Message_read = BASE_URL_LIVE + "message/read";
   static String public_profile = BASE_URL_LIVE + "publicprofile";
+  static String Hard_delete_message = BASE_URL_LIVE + "message/harddelete";
 
   ////////////////////////TODO COACH SEARCH athelete ///////////////////////////////
   static String COACH_athletesearch = BASE_URL_LIVE + "pointstreak/playerstats?";

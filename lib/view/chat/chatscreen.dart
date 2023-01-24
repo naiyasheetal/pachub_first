@@ -6,8 +6,8 @@ import 'package:pachub/common_widget/appbar.dart';
 import 'package:pachub/config/preference.dart';
 import 'package:pachub/models/ChatModel/chatUsersModel.dart';
 import 'package:pachub/view/Athletes/athletes.dart';
-import 'package:pachub/view/chat/Tabs/delete.dart';
-import 'package:pachub/view/chat/Tabs/favourite.dart';
+import 'package:pachub/view/chat/Tabs/Delete/delete.dart';
+import 'package:pachub/view/chat/Tabs/favourite/favourite.dart';
 import 'package:pachub/view/chat/Tabs/Inbox/inbox.dart';
 import 'package:get/get.dart';
 

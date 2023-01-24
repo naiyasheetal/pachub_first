@@ -28,6 +28,7 @@ class InboxChatScreen extends StatefulWidget {
   final String name;
   final bool selected;
   final String recieverid;
+  final String senderid;
 
   const InboxChatScreen(
       {Key? key,
@@ -35,7 +36,8 @@ class InboxChatScreen extends StatefulWidget {
       required this.online,
       required this.name,
       required this.selected,
-      required this.recieverid})
+      required this.recieverid,
+        required this.senderid})
       : super(key: key);
 
   @override
@@ -146,11 +148,13 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
               ],
             ),
             SizedBox(width: 15),
-            CommonText(
-                text: widget.name,
-                fontSize: 20,
-                color: AppColors.white,
-                fontWeight: FontWeight.w500),
+            Expanded(
+              child: CommonText(
+                  text: widget.name,
+                  fontSize: 20,
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w500),
+            ),
           ],
         ),
         actions: [
@@ -177,7 +181,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
     return Padding(
       padding: EdgeInsets.all(1),
       child: FutureBuilder<MYMessagechatlistingModel?>(
-        future: ChatMessageApi(accessToken,widget.recieverid),
+        future: ChatMessageApi(accessToken,widget.senderid),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             const Center(
@@ -203,7 +207,8 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                     itemCount: chatresult.length,
                     itemBuilder: (context, index) {
                       final item = chatresult[index];
-                      return ChatBubble(
+                     return item.status=="Send"?
+                       ChatBubble(
                         elevation: 0,
                         clipper: ChatBubbleClipper1(type: BubbleType.sendBubble),
                         alignment: Alignment.topRight,
@@ -233,7 +238,7 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                             itemBuilder:
                                 (context) {
                               return [
-                                PopupMenuItem<int>(
+                               /* PopupMenuItem<int>(
                                   value: 0,
                                   child: Row(
                                     children: const [
@@ -255,9 +260,9 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                                           FontWeight.w400),
                                     ],
                                   ),
-                                ),
+                                ),*/
                                 PopupMenuItem<int>(
-                                  value: 1,
+                                  value: 0,
                                   child: Row(
                                     children: const [
                                       Icon(
@@ -283,15 +288,15 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                             },
                             onSelected: (value) {
                               if (value == 0) {
-                                print(
-                                    "My account menu is selected.");
-                                FavouriteMessageApi(accessToken,item.messageID.toString(),context);
+                                DeleteMessageDialog(item.messageID.toString());
+                                print("My account menu is selected.");
+                                //FavouriteMessageApi(accessToken,item.messageID.toString(),context);
                                 //ReadMessageApi(item.messageID,context);
                               }
-                              else{
+                              /*else{
                                 DeleteMessageDialog(item.messageID.toString());
 
-                              }
+                              }*/
                             },
                           ),
                         ),
@@ -318,89 +323,110 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
                             ],
                           ),
                         ),
-                      );
+                      ):item.status=="Receive"&&item.isDeleted==false?
+                     ChatBubble(
+                       elevation: 0,
+                       clipper: ChatBubbleClipper1(type: BubbleType.receiverBubble),
+                       backGroundColor: AppColors.ligt_grey_color,
+                       margin: EdgeInsets.only(top: 20, right: 100, left: 5),
+                       child: Padding(
+                         padding: const EdgeInsets.all(10.0),
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             Row(
+                               mainAxisSize: MainAxisSize.min,
+                               mainAxisAlignment: MainAxisAlignment.end,
+                               children: [
+                                 Expanded(
+                                   child: CommonText(
+                                       text: item.message.toString(),
+                                       fontSize: 14,
+                                       color: AppColors.black_txcolor,
+                                       fontWeight: FontWeight.w500),
+                                 ),
+                                 Container(
+                                   width: 20,
+                                   child: PopupMenuButton(
+                                     iconSize: 20,
+                                     icon: Icon(Icons.keyboard_arrow_down,color: AppColors.black,),
+                                     itemBuilder:
+                                         (context) {
+                                       return [
+                                          PopupMenuItem<int>(
+                                  value: 0,
+                                  child: Row(
+                                    children: const [
+                                      Icon(
+                                          Icons.favorite,
+                                          color: AppColors
+                                              .dark_red),
+                                      SizedBox(
+                                          width:
+                                          10),
+                                      CommonText(
+                                          text:
+                                          "favourite",
+                                          fontSize:
+                                          15,
+                                          color: AppColors
+                                              .black_txcolor,
+                                          fontWeight:
+                                          FontWeight.w400),
+                                    ],
+                                  ),
+                                ),
+                                         PopupMenuItem<int>(
+                                           value: 1,
+                                           child: Row(
+                                             children: const [
+                                               Icon(
+                                                   Icons.delete_outlined,
+                                                   color: AppColors
+                                                       .black_txcolor),
+                                               SizedBox(
+                                                   width:
+                                                   10),
+                                               CommonText(
+                                                   text:
+                                                   "Delete",
+                                                   fontSize:
+                                                   15,
+                                                   color: AppColors
+                                                       .black_txcolor,
+                                                   fontWeight:
+                                                   FontWeight.w400),
+                                             ],
+                                           ),
+                                         ),
+                                       ];
+                                     },
+                                     onSelected: (value) {
+                                       if (value == 0) {
+                                         FavouriteMessageApi(accessToken,item.messageID.toString(),context);
+                                         //ReadMessageApi(item.messageID,context);
+                                       }
+                                       else{
+                                         SOFT_DeleteMessageDialog(item.messageID.toString());
+
+                              }
+                                     },
+                                   ),
+                                 ),
+
+
+                               ],
+
+                             ),
+                             SizedBox(height: 5),
+
+                           ],
+                         ),
+                       ),
+                     ):Container();
                     },
                   );
                 }}
-              }
-              else {
-                return const Center(
-                  child: NoDataFound(),
-                );
-              }
-          }
-          return const Center(
-            child: NoDataFound(),
-          );
-        },
-      ),
-    );
-
-  }
-  Widget Recieve_ChatListviewBuilder(BuildContext context){
-    return Padding(
-      padding: EdgeInsets.all(1),
-      child: FutureBuilder<MYMessagechatlistingModel?>(
-        future: SendMessageApi(accessToken,widget.recieverid,"",context),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            const Center(
-              child: NoDataFound(),
-            );
-          }
-          switch (snapshot.connectionState) {
-            /*case ConnectionState.waiting:
-              return Center(child: CustomLoader());*/
-            case ConnectionState.done:
-              if (snapshot.hasData) {
-                List<MychatResult>? chatresult = snapshot.data?.result;
-                if (chatresult != null) {
-                  return snapshot.data?.result!.length != 0
-                      ? ListView.builder(
-                    padding: const EdgeInsets.only(top: 20),
-                    shrinkWrap: true,
-                    itemCount: chatresult.length,
-                    itemBuilder: (context, index) {
-                      final item = chatresult[index];
-                      return ChatBubble(
-                        elevation: 0,
-                        clipper: ChatBubbleClipper1(type: BubbleType.receiverBubble),
-                        backGroundColor: AppColors.ligt_grey_color,
-                        margin: EdgeInsets.only(top: 20, right: 100, left: 5),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CommonText(
-                                  text: item.message.toString(),
-                                  fontSize: 14,
-                                  color: AppColors.black_txcolor,
-                                  fontWeight: FontWeight.w500),
-                              SizedBox(height: 5),
-                             /* Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  CommonText(
-                                      text: message.time.toString(),
-                                      fontSize: 12,
-                                      color: AppColors.grey_hint_color,
-                                      fontWeight: FontWeight.w500),
-                                ],
-                              ),*/
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                      : const Padding(
-                    padding: EdgeInsets.only(top: 15),
-                    child: Center(
-                      child: NoDataFound(),
-                    ),
-                  );
-                }
               }
               else {
                 return const Center(
@@ -504,7 +530,8 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          SendMessageApi(accessToken,widget.recieverid,sendMessage.text,context,);
+          print("this is sender id ${widget.senderid}");
+          SendMessageApi(accessToken,widget.senderid,sendMessage.text,context,);
           sendMessage.clear();
          // Send_ChatListviewBuilder();
         });
@@ -548,6 +575,123 @@ class _InboxChatScreenState extends State<InboxChatScreen> {
   }
 
   Future<bool> DeleteMessageDialog(String messageid) async {
+    final shouldPop = await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0)),
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: AppColors.dark_blue_button_color,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10.0),
+                        topRight: Radius.circular(10.0),
+                      )),
+                  child: Center(
+                    child: Text("Confirmation",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: AppColors.white,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Center(
+                    child: Text(
+                      AppString.deletemsgpermisiontx,
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white10,
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10))),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            print("this is message id==>${messageid}");
+                            //DeleteMessageApi(accessToken,messageid,context);
+                            HARD_DeleteMessageApi(accessToken,messageid,context);
+                            Navigator.pop(context, false);
+
+                          });
+                        },
+                        child: Container(
+                            padding: EdgeInsets.all(10),
+                            //height: 25,
+                            //width: 45.0,
+                            decoration: BoxDecoration(
+                              color: AppColors.dark_blue_button_color,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Center(
+                                child: Text(
+                                  "Confirm",
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                    fontSize: 15,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ))),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context, false);
+                        },
+                        child: Container(
+                            padding: EdgeInsets.all(10),
+                            //height: 25,
+                            //width: 45.0,
+                            decoration: BoxDecoration(
+                              color: AppColors.dark_blue_button_color,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Center(
+                                child: Text(
+                                  " cancel",
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                    fontSize: 15,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ))),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+
+    return shouldPop ?? false;
+  }
+  Future<bool> SOFT_DeleteMessageDialog(String messageid) async {
     final shouldPop = await showDialog(
         context: context,
         barrierDismissible: false,
